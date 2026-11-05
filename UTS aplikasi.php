@@ -5,7 +5,6 @@ session_start();
 // 2) Memanggil file koneksi database
 require_once 'koneksi.php';
 
-// Inisialisasi nilai awal
 $total_pemasukan   = 0;
 $total_pengeluaran = 0;
 $saldo_kas         = 0;
@@ -287,7 +286,6 @@ if (isset($koneksi) && $koneksi) {
 </head>
 <body>
 
-    <!-- Header dan Navbar -->
     <header class="navbar">
         <div class="logo">
             <i class="fa-solid fa-wallet"></i>
@@ -299,10 +297,8 @@ if (isset($koneksi) && $koneksi) {
         </div>
     </header>
 
-    <!-- Container -->
     <main class="container">
 
-        <!-- Summary Cards Section -->
         <section class="cards-grid">
             <div class="card card-pemasukan">
                 <div class="card-icon"><i class="fa-solid fa-arrow-down-left"></i></div>
@@ -326,8 +322,6 @@ if (isset($koneksi) && $koneksi) {
                 </div>
             </div>
         </section>
-
-        <!-- Table dan Action Section -->
         <section class="table-container">
             <div class="table-header">
                 <h3><i class="fa-solid fa-list"></i> Riwayat Transaksi Kas</h3>
@@ -390,7 +384,6 @@ if (isset($koneksi) && $koneksi) {
         </section>
     </main>
 
-    <!-- Modal Form Tambah/Edit Transaksi -->
     <div class="modal" id="modalForm">
         <div class="modal-content">
             <div class="modal-header">
@@ -430,8 +423,6 @@ if (isset($koneksi) && $koneksi) {
             </form>
         </div>
     </div>
-
-    <!-- JavaScript Internal -->
     <script>
         const modal = document.getElementById('modalForm');
         const modalTitle = document.getElementById('modalTitle');
