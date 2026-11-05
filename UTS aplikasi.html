@@ -44,7 +44,6 @@
             line-height: 1.5;
         }
 
-        /* Navbar */
         .navbar {
             background-color: #0f172a;
             color: #fff;
@@ -114,7 +113,6 @@
             color: white;
         }
 
-        /* Container & Cards */
         .container {
             max-width: 1200px;
             margin: 2rem auto;
@@ -175,7 +173,6 @@
             color: var(--text-main);
         }
 
-        /* Table Section */
         .table-container {
             background: var(--surface);
             border-radius: var(--radius);
@@ -306,7 +303,6 @@
         .btn-delete { background-color: var(--danger-bg); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); }
         .btn-delete:hover { background-color: var(--danger); color: white; }
 
-        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -434,7 +430,7 @@
 
     <main class="container">
 
-        <!-- Summary Cards Section --> 
+     
         <section class="cards-grid">
             <div class="card card-pemasukan">
                 <div class="card-icon"><i class="fa-solid fa-arrow-down-left"></i></div>
@@ -459,7 +455,7 @@
             </div>
         </section>
 
-        <!-- Table dan Action Section -->
+      
         <section class="table-container">
             <div class="table-header">
                 <h3><i class="fa-solid fa-receipt"></i> Riwayat Transaksi Kas</h3>
@@ -481,7 +477,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Contoh Dummy Row yang nanti diintegrasikan dengan query PHP -->
+                        
                         <tr>
                             <td>1</td>
                             <td>2026-03-01</td>
@@ -518,14 +514,14 @@
         </section>
     </main>
 
-    <!-- Modal Form Tambah/Edit Transaksi -->
+   
     <div class="modal" id="modalForm">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 id="modalTitle">Tambah Transaksi Kas</h4>
                 <span class="close-btn" onclick="closeModal()">&times;</span>
             </div>
-            <!-- Form PHP Native -->
+            
             <form id="kasForm" action="proses_simpan.php" method="POST">
                 <input type="hidden" name="id" id="transaksiId">
 
@@ -560,7 +556,7 @@
         </div>
     </div>
 
-    <!-- JavaScript Internal -->
+   
     <script>
         const modal = document.getElementById('modalForm');
         const modalTitle = document.getElementById('modalTitle');
@@ -578,7 +574,7 @@
                 modalTitle.innerText = 'Edit Transaksi Kas';
                 kasForm.action = 'proses_edit.php';
 
-                // Isi data lama ke form
+               
                 document.getElementById('transaksiId').value = id;
                 document.getElementById('tanggal').value = tanggal;
                 document.getElementById('keterangan').value = keterangan;
@@ -591,7 +587,7 @@
             modal.style.display = 'none';
         }
 
-        // Tutup modal jika klik di luar box modal
+       
         window.onclick = function(event) {
             if (event.target === modal) {
                 closeModal();
