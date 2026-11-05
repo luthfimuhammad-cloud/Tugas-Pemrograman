@@ -1,8 +1,7 @@
 <?php
-// 1) Memulai session PHP:
+
 session_start();
 
-// 2) Memanggil file koneksi database
 require_once 'koneksi.php';
 
 $total_pemasukan   = 0;
@@ -11,20 +10,16 @@ $saldo_kas         = 0;
 $query_kas         = false;
 
 if (isset($koneksi) && $koneksi) {
-    // 3) Query READ Menghitung Total Pemasukan dari MySQL:
     $query_masuk     = mysqli_query($koneksi, "SELECT SUM(jumlah) AS total FROM kas WHERE jenis='masuk'");
     $data_masuk      = $query_masuk ? mysqli_fetch_assoc($query_masuk) : null;
     $total_pemasukan = $data_masuk['total'] ?? 0;
 
-    // 4) Query READ Menghitung Total Pengeluaran dari MySQL:
     $query_keluar      = mysqli_query($koneksi, "SELECT SUM(jumlah) AS total FROM kas WHERE jenis='keluar'");
     $data_keluar       = $query_keluar ? mysqli_fetch_assoc($query_keluar) : null;
     $total_pengeluaran = $data_keluar['total'] ?? 0;
 
-    // 5) Kalkulasi Saldo Kas:
     $saldo_kas = $total_pemasukan - $total_pengeluaran;
 
-    // 6) Query READ untuk Mengambil Seluruh Transaksi Kas:
     $query_kas = mysqli_query($koneksi, "SELECT * FROM kas ORDER BY tanggal DESC, id DESC");
 }
 ?>
