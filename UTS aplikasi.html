@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Kas Keuangan Sederhana</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f9;
+            color: #333;
+        }
+
+        .navbar {
+            background-color: #1e293b;
+            color: #fff;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.2rem;
+        }
+
+        .logo span {
+            color: #3b82f6;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-logout {
+            background-color: #ef4444;
+            color: white;
+            padding: 6px 12px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            transition: 0.3s;
+        }
+
+        .btn-logout:hover {
+            background-color: #dc2626;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+        }
+
+        .card-pemasukan .card-icon { background: #dcfce7; color: #16a34a; }
+        .card-pengeluaran .card-icon { background: #fee2e2; color: #dc2626; }
+        .card-saldo .card-icon { background: #dbeafe; color: #2563eb; }
+
+        .card-details p {
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        .card-details h3 {
+            font-size: 1.4rem;
+            margin-top: 4px;
+        }
+
+        .table-container {
+            background: #fff;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.2rem;
+        }
+
+        .btn-primary {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        .btn-primary:hover { background-color: #1d4ed8; }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background-color: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-masuk { background: #dcfce7; color: #15803d; }
+        .badge-keluar { background: #fee2e2; color: #b91c1c; }
+
+        .text-masuk { color: #16a34a; font-weight: 600; }
+        .text-keluar { color: #dc2626; font-weight: 600; }
+
+        .action-btn {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-edit, .btn-delete {
+            border: none;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .btn-edit { background-color: #fef08a; color: #854d0e; }
+        .btn-delete { background-color: #fca5a5; color: #991b1b; }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: #fff;
+            width: 100%;
+            max-width: 450px;
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .close-btn {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #64748b;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+            color: #475569;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            outline: none;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 1.5rem;
+        }
+
+        .btn-secondary {
+            background: #94a3b8;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="logo">
+            <i class="fa-solid fa-wallet"></i>
+            <h2>KasKu<span>App</span></h2>
+        </div>
+        <div class="user-info">
+            <span>Selamat datang, <strong>Admin Kas</strong></span>
+            <a href="logout.php" class="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+        </div>
+    </header>
+
+    <main class="container">
+
+<!--Summary Cards Section: --> 
+        <section class="cards-grid">
+            <div class="card card-pemasukan">
+                <div class="card-icon"><i class="fa-solid fa-arrow-down-left"></i></div>
+                <div class="card-details">
+                    <p>Total Pemasukan</p>
+                    <h3 id="totalPemasukan">Rp 5.500.000</h3>
+                </div>
+            </div>
+            <div class="card card-pengeluaran">
+                <div class="card-icon"><i class="fa-solid fa-arrow-up-right"></i></div>
+                <div class="card-details">
+                    <p>Total Pengeluaran</p>
+                    <h3 id="totalPengeluaran">Rp 1.200.000</h3>
+                </div>
+            </div>
+            <div class="card card-saldo">
+                <div class="card-icon"><i class="fa-solid fa-scale-balanced"></i></div>
+                <div class="card-details">
+                    <p>Saldo Kas Saat Ini</p>
+                    <h3 id="totalSaldo">Rp 4.300.000</h3>
+                </div>
+            </div>
+        </section>
+
+<!-- Table dan Action Section: -->
+        <section class="table-container">
+            <div class="table-header">
+                <h3><i class="fa-solid fa-list"></i> Riwayat Transaksi Kas</h3>
+                <button class="btn-primary" onclick="openModal('add')">
+                    <i class="fa-solid fa-plus"></i> Tambah Transaksi
+                </button>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Tanggal</th>
+                            <th>Keterangan</th>
+                            <th>Jenis</th>
+                            <th>Jumlah (Rp)</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+<!-- Contoh Dummy Row yang nanti diintegrasikan dengan query PHP: -->
+                        <tr>
+                            <td>1</td>
+                            <td>2026-03-01</td>
+                            <td>Iuran Anggota Bulan Maret</td>
+                            <td><span class="badge badge-masuk">Pemasukan</span></td>
+                            <td class="text-masuk">+ Rp 500.000</td>
+                            <td class="action-btn">
+                                <button class="btn-edit" onclick="openModal('edit', 1, '2026-03-01', 'Iuran Anggota Bulan Maret', 'masuk', 500000)">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                                <a href="proses_hapus.php?id=1" class="btn-delete" onclick="return confirm('Yakin ingin menghapus data ini?')">
+                                    <i class="fa-solid fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>2026-03-02</td>
+                            <td>Pembelian ATK & Kertas A4</td>
+                            <td><span class="badge badge-keluar">Pengeluaran</span></td>
+                            <td class="text-keluar">- Rp 150.000</td>
+                            <td class="action-btn">
+                                <button class="btn-edit" onclick="openModal('edit', 2, '2026-03-02', 'Pembelian ATK & Kertas A4', 'keluar', 150000)">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                                <a href="proses_hapus.php?id=2" class="btn-delete" onclick="return confirm('Yakin ingin menghapus data ini?')">
+                                    <i class="fa-solid fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+<!-- Modal Form yang diTambah/Edit Transaksi: -->
+    <div class="modal" id="modalForm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 id="modalTitle">Tambah Transaksi Kas</h4>
+                <span class="close-btn" onclick="closeModal()">&times;</span>
+            </div>
+            <!-- Form yang dikirim ke PHP Native: -->
+            <form id="kasForm" action="proses_simpan.php" method="POST">
+                <input type="hidden" name="id" id="transaksiId">
+
+                <div class="form-group">
+                    <label for="tanggal">Tanggal Transaksi</label>
+                    <input type="date" id="tanggal" name="tanggal" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="keterangan">Keterangan / Deskripsi</label>
+                    <input type="text" id="keterangan" name="keterangan" placeholder="Contoh: Pembelian konsumsi rapat" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="jenis">Jenis Transaksi</label>
+                    <select id="jenis" name="jenis" required>
+                        <option value="masuk">Pemasukan (+)</option>
+                        <option value="keluar">Pengeluaran (-)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="jumlah">Jumlah Nominal (Rp)</label>
+                    <input type="number" id="jumlah" name="jumlah" min="1" placeholder="Contoh: 50000" required>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeModal()">Batal</button>
+                    <button type="submit" class="btn-primary">Simpan Transaksi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript Internal: -->
+    <script>
+        const modal = document.getElementById('modalForm');
+        const modalTitle = document.getElementById('modalTitle');
+        const kasForm = document.getElementById('kasForm');
+
+        function openModal(mode, id = '', tanggal = '', keterangan = '', jenis = 'masuk', jumlah = '') {
+            modal.style.display = 'flex';
+
+            if (mode === 'add') {
+                modalTitle.innerText = 'Tambah Transaksi Kas';
+                kasForm.action = 'proses_simpan.php';
+                kasForm.reset();
+                document.getElementById('transaksiId').value = '';
+            } else if (mode === 'edit') {
+                modalTitle.innerText = 'Edit Transaksi Kas';
+                kasForm.action = 'proses_edit.php';
+
+                // Isi data lama ke form:
+                document.getElementById('transaksiId').value = id;
+                document.getElementById('tanggal').value = tanggal;
+                document.getElementById('keterangan').value = keterangan;
+                document.getElementById('jenis').value = jenis;
+                document.getElementById('jumlah').value = jumlah;
+            }
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+
+        // Tutup modal jika klik luar kotak:
+        window.onclick = function(event) {
+            if (event.target === modal) {
+                closeModal();
+            }
+        };
+    </script>
+</body>
+</html>
