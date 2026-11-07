@@ -2,8 +2,8 @@
 session_start();
 require_once 'koneksi.php';
 
-if (!isset($koneksi)) {
-    die("Koneksi database tidak tersedia.");
+if (!isset($koneksi) || !$koneksi) {
+    $koneksi = null;
 }
 
 if (isset($_SESSION['login'])) {
@@ -14,26 +14,30 @@ if (isset($_SESSION['login'])) {
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = mysqli_real_escape_string($koneksi, $_POST['username'] ?? '');
-    $password = $_POST['password'] ?? '';
-
-    $query = mysqli_query($koneksi, "SELECT * FROM users WHERE username = '$username'");
-    
-    if ($query && mysqli_num_rows($query) === 1) {
-        $user = mysqli_fetch_assoc($query);
-        
-        if ($password === $user['password'] || password_verify($password, $user['password'])) {
-            $_SESSION['login']        = true;
-            $_SESSION['username']     = $user['username'];
-            $_SESSION['nama_lengkap'] = $user['nama_lengkap'] ?? $user['username'];
-
-            header("Location: UTS aplikasi.php");
-            exit;
-        } else {
-            $error = "Password yang Anda masukkan salah!";
-        }
+    if (!$koneksi) {
+        $error = "Database belum dibuat di phpMyAdmin!";
     } else {
-        $error = "Username tidak ditemukan!";
+        $username = mysqli_real_escape_string($koneksi, $_POST['username'] ?? '');
+        $password = $_POST['password'] ?? '';
+
+        $query = mysqli_query($koneksi, "SELECT * FROM users WHERE username = '$username'");
+        
+        if ($query && mysqli_num_rows($query) === 1) {
+            $user = mysqli_fetch_assoc($query);
+            
+            if ($password === $user['password'] || password_verify($password, $user['password'])) {
+                $_SESSION['login']        = true;
+                $_SESSION['username']     = $user['username'];
+                $_SESSION['nama_lengkap'] = $user['nama_lengkap'] ?? $user['username'];
+
+                header("Location: UTS aplikasi.php");
+                exit;
+            } else {
+                $error = "Password yang Anda masukkan salah!";
+            }
+        } else {
+            $error = "Username tidak ditemukan!";
+        }
     }
 }
 ?>
