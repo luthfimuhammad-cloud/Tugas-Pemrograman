@@ -15,7 +15,7 @@ if (isset($koneksi) && $_SERVER['REQUEST_METHOD'] === 'POST') {
                 keterangan = '$keterangan',
                 jenis      = '$jenis',
                 jumlah     = '$jumlah' 
-              WHERE id = '$id'";
+            WHERE id = '$id'";
 
     if (mysqli_query($koneksi, $query)) {
         header("Location: UTS aplikasi.php");
