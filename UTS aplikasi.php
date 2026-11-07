@@ -1,6 +1,10 @@
 <?php
-
 session_start();
+
+if (!isset($_SESSION['login'])) {
+    header("Location: login.php");
+    exit;
+}
 
 require_once 'koneksi.php';
 
@@ -9,16 +13,15 @@ $total_pengeluaran = 0;
 $saldo_kas         = 0;
 $query_kas         = false;
 
-if (isset($koneksi) && $koneksi) {
+if (isset($koneksi) &&$koneksi) {
     $query_masuk     = mysqli_query($koneksi, "SELECT SUM(jumlah) AS total FROM kas WHERE jenis='masuk'");
     $data_masuk      = $query_masuk ? mysqli_fetch_assoc($query_masuk) : null;
-    $total_pemasukan = $data_masuk['total'] ?? 0;
+    $total_pemasukan =$data_masuk['total'] ?? 0;
 
     $query_keluar      = mysqli_query($koneksi, "SELECT SUM(jumlah) AS total FROM kas WHERE jenis='keluar'");
     $data_keluar       = $query_keluar ? mysqli_fetch_assoc($query_keluar) : null;
-    $total_pengeluaran = $data_keluar['total'] ?? 0;
-
-    $saldo_kas = $total_pemasukan - $total_pengeluaran;
+    $total_pengeluaran =$data_keluar['total'] ?? 0;
+    $saldo_kas = $total_pemasukan -$total_pengeluaran;
 
     $query_kas = mysqli_query($koneksi, "SELECT * FROM kas ORDER BY tanggal DESC, id DESC");
 }
@@ -366,257 +369,3 @@ if (isset($koneksi) && $koneksi) {
             font-size: 1.15rem;
             font-weight: 700;
         }
-
-        .close-btn {
-            font-size: 1.25rem;
-            cursor: pointer;
-            color: var(--text-muted);
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: background 0.2s ease;
-        }
-
-        .close-btn:hover {
-            background: #f1f5f9;
-            color: var(--text-main);
-        }
-
-        .form-group {
-            margin-bottom: 1.25rem;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 6px;
-            color: var(--text-main);
-        }
-
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 10px 14px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            outline: none;
-            font-size: 0.9rem;
-            background: #f8fafc;
-            transition: all 0.2s ease;
-        }
-
-        .form-group input:focus, .form-group select:focus {
-            background: #fff;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-        }
-
-        .modal-footer {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 1.75rem;
-        }
-
-        .btn-secondary {
-            background: #f1f5f9;
-            color: var(--text-muted);
-            border: 1px solid var(--border-color);
-            padding: 10px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: all 0.2s ease;
-        }
-
-        .btn-secondary:hover {
-            background: #e2e8f0;
-            color: var(--text-main);
-        }
-    </style>
-</head>
-<body>
-
-    <header class="navbar">
-        <div class="logo">
-            <i class="fa-solid fa-wallet"></i>
-            <div>KasKu<span>App</span></div>
-        </div>
-        <div class="user-info">
-            <span>Selamat datang, <strong>Admin Kas</strong></span>
-            <a href="logout.php" class="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
-        </div>
-    </header>
-
-    <main class="container">
-
-     
-        <section class="cards-grid">
-            <div class="card card-pemasukan">
-                <div class="card-icon"><i class="fa-solid fa-arrow-down-left"></i></div>
-                <div class="card-details">
-                    <p>Total Pemasukan</p>
-                    <h3 id="totalPemasukan">Rp 5.500.000</h3>
-                </div>
-            </div>
-            <div class="card card-pengeluaran">
-                <div class="card-icon"><i class="fa-solid fa-arrow-up-right"></i></div>
-                <div class="card-details">
-                    <p>Total Pengeluaran</p>
-                    <h3 id="totalPengeluaran">Rp 1.200.000</h3>
-                </div>
-            </div>
-            <div class="card card-saldo">
-                <div class="card-icon"><i class="fa-solid fa-scale-balanced"></i></div>
-                <div class="card-details">
-                    <p>Saldo Kas Saat Ini</p>
-                    <h3 id="totalSaldo">Rp 4.300.000</h3>
-                </div>
-            </div>
-        </section>
-
-      
-        <section class="table-container">
-            <div class="table-header">
-                <h3><i class="fa-solid fa-receipt"></i> Riwayat Transaksi Kas</h3>
-                <button class="btn-primary" onclick="openModal('add')">
-                    <i class="fa-solid fa-plus"></i> Tambah Transaksi
-                </button>
-            </div>
-
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th style="width: 50px;">No</th>
-                            <th style="width: 130px;">Tanggal</th>
-                            <th>Keterangan</th>
-                            <th style="width: 140px;">Jenis</th>
-                            <th style="width: 160px;">Jumlah</th>
-                            <th style="width: 100px; text-align: center;">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        
-                        <tr>
-                            <td>1</td>
-                            <td>2026-03-01</td>
-                            <td>Iuran Anggota Bulan Maret</td>
-                            <td><span class="badge badge-masuk"><i class="fa-solid fa-circle-down"></i> Pemasukan</span></td>
-                            <td class="text-masuk">+ Rp 500.000</td>
-                            <td class="action-btn" style="justify-content: center;">
-                                <button class="btn-edit" title="Edit" onclick="openModal('edit', 1, '2026-03-01', 'Iuran Anggota Bulan Maret', 'masuk', 500000)">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </button>
-                                <a href="proses_hapus.php?id=1" class="btn-delete" title="Hapus" onclick="return confirm('Yakin ingin menghapus data ini?')">
-                                    <i class="fa-solid fa-trash"></i>
-                                </a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>2026-03-02</td>
-                            <td>Pembelian ATK & Kertas A4</td>
-                            <td><span class="badge badge-keluar"><i class="fa-solid fa-circle-up"></i> Pengeluaran</span></td>
-                            <td class="text-keluar">- Rp 150.000</td>
-                            <td class="action-btn" style="justify-content: center;">
-                                <button class="btn-edit" title="Edit" onclick="openModal('edit', 2, '2026-03-02', 'Pembelian ATK & Kertas A4', 'keluar', 150000)">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </button>
-                                <a href="proses_hapus.php?id=2" class="btn-delete" title="Hapus" onclick="return confirm('Yakin ingin menghapus data ini?')">
-                                    <i class="fa-solid fa-trash"></i>
-                                </a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-    </main>
-
-   
-    <div class="modal" id="modalForm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 id="modalTitle">Tambah Transaksi Kas</h4>
-                <span class="close-btn" onclick="closeModal()">&times;</span>
-            </div>
-            
-            <form id="kasForm" action="proses_simpan.php" method="POST">
-                <input type="hidden" name="id" id="transaksiId">
-
-                <div class="form-group">
-                    <label for="tanggal">Tanggal Transaksi</label>
-                    <input type="date" id="tanggal" name="tanggal" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="keterangan">Keterangan / Deskripsi</label>
-                    <input type="text" id="keterangan" name="keterangan" placeholder="Contoh: Pembelian konsumsi rapat" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="jenis">Jenis Transaksi</label>
-                    <select id="jenis" name="jenis" required>
-                        <option value="masuk">Pemasukan (+)</option>
-                        <option value="keluar">Pengeluaran (-)</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="jumlah">Jumlah Nominal (Rp)</label>
-                    <input type="number" id="jumlah" name="jumlah" min="1" placeholder="Contoh: 50000" required>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn-secondary" onclick="closeModal()">Batal</button>
-                    <button type="submit" class="btn-primary">Simpan Transaksi</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-   
-    <script>
-        const modal = document.getElementById('modalForm');
-        const modalTitle = document.getElementById('modalTitle');
-        const kasForm = document.getElementById('kasForm');
-
-        function openModal(mode, id = '', tanggal = '', keterangan = '', jenis = 'masuk', jumlah = '') {
-            modal.style.display = 'flex';
-
-            if (mode === 'add') {
-                modalTitle.innerText = 'Tambah Transaksi Kas';
-                kasForm.action = 'proses_simpan.php';
-                kasForm.reset();
-                document.getElementById('transaksiId').value = '';
-            } else if (mode === 'edit') {
-                modalTitle.innerText = 'Edit Transaksi Kas';
-                kasForm.action = 'proses_edit.php';
-
-               
-                document.getElementById('transaksiId').value = id;
-                document.getElementById('tanggal').value = tanggal;
-                document.getElementById('keterangan').value = keterangan;
-                document.getElementById('jenis').value = jenis;
-                document.getElementById('jumlah').value = jumlah;
-            }
-        }
-
-        function closeModal() {
-            modal.style.display = 'none';
-        }
-
-       
-        window.onclick = function(event) {
-            if (event.target === modal) {
-                closeModal();
-            }
-        };
-    </script>
-</body>
-</html>
